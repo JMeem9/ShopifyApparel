@@ -1,0 +1,34 @@
+
+          
+          <nav class="hidden text-[15px] md:flex self-center mx-2">
+            <ul class="flex" role="list">
+              {% for link in section.settings.menu.links %}
+                {% if link.links != blank %}
+                  <li class="relative mx-2">
+                    <button class="inline-flex items-center">
+                      {{ link.title }}
+                    </button>
+                  </li>
+                {% else %}
+                  <li class="relative mx-2">
+                    <a href="{{link.url}}" class="text-base">{{ link.title }}</a>
+                  </li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </nav>
+
+          {% schema %}
+            {
+              "name": "Namvigation Menu",
+              "tag": "div",
+              "settings": [
+                {
+                  "label": "Heading Navigation Menu",
+                  "type": "link_list",
+                  "id": "menu",
+                  "default": "main-menu"
+                }
+              ]
+            }
+          {% endschema %}

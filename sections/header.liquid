@@ -1,0 +1,149 @@
+{{ 'section-header.css' | asset_url | stylesheet_tag }}
+<div class="relative bg-white text-black" x-data="{ mobileMenuOpen : false}">
+  <div class="mx-auto">
+    <div class="py-4 md:space-x-10">
+      <div class="flex items-center justify-between md:flex-1 truncate">
+        <!-- STORE NAME/LOGO -->
+        <div class="flex items-center">
+          <img height='' width=''  src="{{ 'rich_apparel_logo.png' | asset_img_url: 'large' }}" class="logo w-auto h-[18px] lg:h-auto mr-5">
+        </div>
+        <!-- NAVIGATION MENU -->
+        <nav class="hidden md:flex self-center mx-5 font-medium">
+          <ul class="flex" role="list">
+            {% for link in section.settings.menu.links %}
+              {% if link.links != blank %}
+                {% assign link_handel = link.handle | replace: '-', '_' %}
+                <li class="header-nav-menu-item lg:text-lg  hover:underline hover:underline-offset-4" x-data="{ {{link_handel}}: false }">
+                  <button class="inline-flex items-center" x-on:click="{{link_handel}}= !{{link_handel}}">
+                    {{ link.title }}
+                    {% render 'dropdown-icon' %}
+                  </button>
+                  <div
+                    x-show="{{link_handel}}"
+                    @click.away="{{link_handel}}=false"
+                    class="absolute z-10 transform px-2 w-screen max-w-sm sm:px-0 lg:-ml-0.5">
+                    <div class="shadow-lg broder ring-black ring-opacity-5 overflow-hidden rounded-lg bg-gray-100">
+                      {% for child in link.links %}
+                        <a href="{{child.url}}" class="p-2 flex items-start text-black hover:bg-sky-400 hover:text-black">
+                          <div class="ml-4font-medium">
+                            {{ child.title }}
+                          </div>
+                        </a>
+                      {% endfor %}
+
+                    </div>
+                  </div>
+                </li>
+              {% else %}
+                <li class="header-nav-menu-item lg:text-lg hover:text-black hover:underline hover:underline-offset-4">
+                  <a href="{{link.url}}" class="">{{ link.title }}</a>
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </nav>
+        <!-- CART MENU -->
+        <div class="flex items-center">
+          <!-- MOBILE MENU ICON -->
+          <div class="md:hidden m-2">
+            <button x-on:click="mobileMenuOpen = true" type="button">
+              {% render 'hamburger-menu' %}
+            </button>
+          </div>
+          <div class="m-2">
+            {% render 'icon-search' %}
+          </div>
+          <!-- CUSTOMER SECTION -->
+          <div class="m-2">
+            <a href="/cart">{% render 'icon-cart' %}</a>
+          </div>
+          {% if shop.customer_accounts_enabled %}
+            {% if customer %}
+              <a href="/account">account</a>
+            {% else %}
+              login
+            {% endif %}
+          {% endif %}
+          <!-- MOBILE MENU CONTAINER -->
+          <div
+            x-show="mobileMenuOpen"
+            @click.away="mobileMenuOpen=false"
+            class="absolute z-10 top-0 inset-x-0 p2 transfrm origin-top-left md:hidden">
+            <div class="shadow-lg rounded-lg ring-1 ring-black ring-opacity-5 bg-white w-full">
+              <div class="p-5 divide-y-2 devide-gray-50">
+                <!-- MOBILE MENU HEADER?CLOSE BTN -->
+                <div class="flex items-center justify-between pb-3">
+                  <div>
+                    <h1 class="text-lg text-gray-500">{{ section.settings.mobile_menu_title }}</h1>
+                  </div>
+                  <div class="-mr-2">
+                    <button
+                      type="button"
+                      class="bg-white rounded-md p-2 text-gray-500"
+                      x-on:click="mobileMenuOpen=false">
+                      {% render 'close-icon' %}
+                    </button>
+                  </div>
+                </div>
+                <!-- MOBILE MENU NAVIGATION LINK -->
+                <div class="pt-3">
+                  <nav>
+                    <ul class="mobile-menu text-base ">
+                      {% for link in section.settings.menu.links %}
+                        {% if link.links != blank %}
+                          {% assign mobile_link_handle = link.handle |  replace: '-','_'  %}
+                          <li class="header-nav-menu-item relative" x-data="{ {{mobile_link_handle}} : false}">
+
+                            <button x-on:click="{{ mobile_link_handle }}= !{{ mobile_link_handle }}" class="text-gray-500 hover:text-gray-900 flex items-center">
+                              <div>{{ link.title }}</div>
+                              {% render 'dropdown-icon' %}
+                            </button>
+
+                            <div x-show="{{ mobile_link_handle }}" class="grid gap-y-5 py-3">
+                              {% for childlink in link.links %}
+                                <a href="{{childlink.url}}" class="flex items-center rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-50">
+                                  <span class="ml-3">{{childlink.title}}</span>
+                                </a>
+                              {% endfor %}
+                            </div>
+                          </li>
+                        {% else %}
+                          <li class="header-nav-menu-item relative">
+
+                            <div class="text-gray-500 hover:text-gray-900 flex items-center">
+                              <a href="{{link.url}}">{{ link.title }}</a>
+                            </div>
+                          </li>
+                        {% endif %}
+                      {% endfor %}
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% schema %}
+  {
+    "name": "Header",
+    "tag": "div",
+    "settings": [
+      {
+        "type": "text",
+        "id": "mobile_menu_title",
+        "default": "Menu",
+        "label": "Mobile Menu Title"
+      }, 
+      {
+        "type": "link_list",
+        "id": "menu",
+        "default": "main-menu",
+        "label": "Heading Navigation Menu"
+      }
+    ]
+  }
+{% endschema %}

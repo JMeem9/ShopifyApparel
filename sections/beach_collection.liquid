@@ -1,0 +1,96 @@
+<div class="flex flex-col items-center relative py-5">
+    {% if section.settings.collection_banner_image %}
+      {{
+        section.settings.collection_banner_image| image_url: width: 1500 | image_tag
+      }}
+      {% else %}
+        <img height='' width='' src="https://petessential-store.myshopify.com/cdn/shop/files/bannerImg2.jpg?v=1715699376&width=1500" class="">
+    {% endif %}
+    <div class="text-white h-[130px] flex flex-col justify-between items-end absolute top-[50%] right-[138px]">
+      {% for block in section.blocks %}
+        {% case block.type %}
+            {% when "heading" %}
+              <h2 class="text-base sm:text-[33px] font-bold ">{{ block.settings.collection_heading }}</h2>
+            {% when "buttons" %}
+              <button class="w-max h-auto mt-1 bg-black px-1 sm:mt-5 sm:px-3 sm:py-2 sm:text-base text-[12px] text-white">
+               <a href="{{ block.settings.button_link }}"></a> {{ block.settings.button_text }}
+              </button>
+        {% endcase %}
+      {% endfor %}
+    </div>
+</div>
+{% if collections['beach-wear'].products %}
+  <div class="flex w-full h-auto max-h-full relative justify-between">
+    {% for product in collections['beach-wear'].products limit:4%}
+      {% render 'card-collection',
+      card_collection: product
+    %}
+    {% endfor %}
+  </div>
+{% endif %}
+{% schema %}
+  {
+    "name": "Section Beach Collection",
+    "tag": "section",
+    "class": "section my-10",
+    "settings": [
+        {
+          "type": "image_picker",
+          "id": "collection_banner_image",
+          "label": "Beach collection banner"
+        }
+      ],
+    "blocks": [
+      {
+        "type": "heading",
+        "name": "Collection heading",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "inline_richtext",
+            "id": "collection_heading",
+            "default": "Spotlight our Beach lineup",
+            "label": "Collection heading"
+          }
+        ]
+      }, {
+        "type": "buttons",
+        "name": "Shop now button",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "text",
+            "id": "button_text",
+            "default": "Shop Now",
+            "label": "button_text",
+            "info": "button_text"
+          }, {
+            "type": "url",
+            "id": "button_link",
+            "label": "button_link"
+          }
+        ]
+      }, {
+        "type": "product",
+        "name": "Collection Product",
+        "limit": 1,
+        "settings": [
+          
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Beach Collection",
+        "blocks": [
+          {
+            "type": "heading"
+          }, {
+            "type": "buttons"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}
+

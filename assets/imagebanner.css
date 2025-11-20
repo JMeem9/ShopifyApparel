@@ -1,0 +1,15 @@
+.imagebanner img {
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    width: 100%;
+    position: relative;
+    transition: opacity .4s cubic-bezier(.25,.46,.45,.94);
+    height: inherit;
+}
+.imagebanner > div{
+    position: absolute;
+    top: 50%;
+    left: 138px;
+    translate: 0 -50%;
+}

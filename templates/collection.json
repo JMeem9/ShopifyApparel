@@ -1,0 +1,32 @@
+{
+  "sections": {
+    "collection": {
+      "type": "collection",
+      "blocks": {
+        "heading_9aAAdQ": {
+          "type": "heading",
+          "settings": {
+            "collection_heading": "Spotlight our summer lineup",
+            "heading_position": "start"
+          }
+        },
+        "atc_button_7By6zQ": {
+          "type": "atc_button",
+          "settings": {
+            "button_text": "Add to Cart",
+            "button_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "heading_9aAAdQ",
+        "atc_button_7By6zQ"
+      ],
+      "settings": {
+      }
+    }
+  },
+  "order": [
+    "collection"
+  ]
+}

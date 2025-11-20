@@ -1,0 +1,263 @@
+{% if cart.item_count > 0 %}
+    <div class="flex flex-col pt-10 pb-10">
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when "heading" %}
+              <h2 class="text-[33px] text-{{block.settings.heading_position}} text-slate-950 ">
+                {% if block.settings.collection_heading %}
+                  {{ block.settings.collection_heading }}
+                {% else %}
+                  {{ collection.title }}
+                {% endif %}
+              </h2>
+          {% endcase %}
+        {% endfor %}
+    </div>
+    <div class="flex">
+        <form action="/cart" method="post" novalidate>
+        {% comment %} <table>
+          <thead class="text-left">
+            <th colspan="2">Prod</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th>total</th>
+          </thead>
+          <tbody>
+            {% for item in cart.items %}
+              <tr>
+                <td>
+                  <a href="{{ item.url | within: collections.all }}">
+                    <img height="" width="" src="{{ item | img_url: width: 200 }}" alt="{{ item.title | escape }}">
+                  </a>
+                </td>
+                <td>
+                  <p><a href="{{ item.url }}" class="font-bold">{{ item.product.title }}</a></p>
+                  <p>{{ item.variant.title }}</p>
+                  <p class="text-red-500 text-sm font-semibold"><a href="/cart/change?line={{ forloop.index }}&amp;quantity=0">remove</a></p>
+                </td>
+                <td><p class=" text-sm font-semibold">{{ item.price | money }}</p></td>
+                <td>
+                  <input type="number" name="updates[]" id="updates_{{ item.key }}" value="{{ item.quantity }}" min="0">
+                </td>
+                <td>
+                  {% if item.original_line_price != item.line_price %}{{ item.original_line_price | money }}{% endif %}
+                  {{ item.line_price | money }}
+                 <strong>{% for discount in item.discounts %}{{ discount.title }}{% endfor %}</strong> 
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table> {% endcomment %}
+        <table class="table-auto">
+  <thead>
+    <tr>
+      <th colspan="2">Prod</th>
+      <th>Price</th>
+      <th>Qty</th>
+      <th>total</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in cart.items %}
+    <tr>
+      <td>
+        <a href="{{ item.url | within: collections.all }}">
+          <img
+            height=""
+            width=""
+            src="{{ item | image_url: width: 200 }}"
+            alt="{{ item.title | escape }}"
+          />
+        </a>
+      </td>
+      <td>
+        <p>
+          <a href="{{ item.url }}" class="font-bold"
+            >{{ item.product.title }}</a
+          >
+        </p>
+        <p>{{ item.variant.title }}</p>
+        <p class="text-red-500 text-sm font-semibold">
+          <a href="/cart/change?line={{ forloop.index }}&amp;quantity=0"
+            >remove</a
+          >
+        </p>
+      </td>
+      <td><p class="text-sm font-semibold">{{ item.price | money }}</p></td>
+      <td>
+        <input
+          type="number"
+          name="updates[]"
+          id="updates_{{ item.key }}"
+          value="{{ item.quantity }}"
+          min="0"
+        />
+      </td>
+      <td>
+        {% if item.original_line_price != item.line_price %}{{
+        item.original_line_price | money }}{% endif %} {{ item.line_price |
+        money }}
+        <strong
+          >{% for discount in item.discounts %}{{ discount.title }}{% endfor
+          %}</strong
+        >
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+        <div>
+          <p>sub total : {{ cart.total_price | money }}</p>
+          <button type="submit" name="update">Update</button>
+          <button type="submit" name="checkout">Checkout</button>
+        </div>
+      </form>
+    </div>
+
+  {% else %}
+    <h2>cart</h2>
+    Cart is empty
+
+
+
+  {% endif %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <div class="flex flex-col pt-10 pb-10">
+  {% for block in section.blocks %}
+    {% case block.type %}
+      {% when "heading" %}
+        <h2 class="text-[33px] text-{{block.settings.heading_position}} text-slate-950 ">
+          {% if block.settings.collection_heading %}
+            {{ block.settings.collection_heading }}
+          {% else %}
+            {{ collection.title }}
+          {% endif %}
+        </h2>
+    {% endcase %}
+  {% endfor %}
+</div>
+<div class="flex flex-wrap">
+  {% for product in collection.products %}
+    <div id="prod-{{ collection.id }}-{{ product.id }}" class="flex flex-col m-3">
+      <a href="{{ product.url | within: collection }}">
+        <img
+          height=''
+          width=''
+          src="{{ product.featured_image.src | image_url: width: 315, height:315 }}"
+          class="">
+      </a>
+      <a href="{{ product.url | within: collection }}" class="text-lg pt-2 font-semibold text-slate-700">{{ product.title }}</a>
+      {% render 'price', product:product %}
+      
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when "atc_button" %}
+            {% if product.available %}
+              {% render 'atc-btn', 
+                  collection_id: collection.id, 
+                  product_id: product.id, 
+                  button_link: block.settings.button_link, 
+                  button_text: block.settings.button_text,
+                %}
+              {% else %}
+                <p><strong>sold out</strong></p>
+            {% endif %}
+        {% endcase %}
+      {% endfor %}
+      
+    </div>
+  {% else %}
+    <p>No Product Found</p>
+  {% endfor %}
+</div>
+
+
+
+{% schema %}
+  {
+    "name": "Cart",
+    "tag": "section",
+    "class": "section my-4",
+    "blocks": [
+      {
+        "type": "heading",
+        "name": "Cart heading",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "inline_richtext",
+            "id": "cart_heading",
+            "default": "Cart",
+            "label": "Cart heading"
+          }, {
+            "type": "select",
+            "id": "heading_position",
+            "options": [
+              {
+                "value": "start",
+                "label": "Left"
+              }, {
+                "value": "center",
+                "label": "Center"
+              }, {
+                "value": "end",
+                "label": "Right"
+              }
+            ],
+            "default": "start",
+            "label": "Heading Position",
+            "info": "select heading position"
+          }
+        ]
+      },{
+        "type": "atc_button",
+        "name": "Add to Cart",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "text",
+            "id": "button_text",
+            "default": "Add to Cart",
+            "label": "Button Label"
+          }, {
+            "type": "url",
+            "id": "button_link",
+            "label": "Button Link"
+          }
+        ]
+      }, {
+        "type": "table",
+        "name": "Product details",
+        "limit": 1
+      }
+    ],
+    "presets": [
+      {
+        "name": "Summer Collection",
+        "blocks": [
+          {
+            "type": "heading"
+          }, {
+            "type": "atc_button"
+          },{
+            "type": "table"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

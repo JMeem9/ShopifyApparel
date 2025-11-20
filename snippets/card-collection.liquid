@@ -1,0 +1,7 @@
+<div class="flex flex-col m-3">
+        <a href="{{card_collection.url}}">
+        <img height='' width='' src="{{ card_collection | image_url: width: 315, height:315 }}" class="">
+        <h3 class="font-bold text-gray-800"> {{- card_collection.title | link_to: card_collection.url }}</h3>
+        <p class="font-medium text-slate-500 text-xs">{{ card_collection.price | money_with_currency }}</p>
+        </a>
+</div>

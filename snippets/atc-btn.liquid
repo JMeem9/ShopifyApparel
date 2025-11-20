@@ -1,0 +1,9 @@
+{% if width %}
+    {% assign btn_width = width %}
+    {% else %}
+    {% assign btn_width = "auto" %}
+{% endif %}
+
+<button id="atc-{{ product_id }}" class="w-{{ btn_width }} h-auto bg-black px-1 sm:mt-5 sm:px-3 sm:py-2 sm:text-base text-[12px] text-white hover:grow" type="{{button_type}}">
+    <a href="{{ button_link }}"></a> {{ button_text }}
+</button>

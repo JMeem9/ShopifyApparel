@@ -1,0 +1,15 @@
+.header-nav-menu-item{
+    display: relative;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 20.7px;
+    letter-spacing: 0.7200000286102295px;
+    text-align: left;
+    padding: 4px 8px;
+    border-radius: 5px;
+    
+}
+.mobile-menu{
+    display: grid;
+    grid-gap: 10px;
+}

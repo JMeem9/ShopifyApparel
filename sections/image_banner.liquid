@@ -1,0 +1,82 @@
+{{ 'imagebanner.css' | asset_url | stylesheet_tag }}
+
+<div class="imagebanner w-full h-auto max-h-full relative my-4">
+  {% if section.settings.hero_banner_image %}
+    {{ section.settings.hero_banner_image| image_url: width: 1500 | image_tag }}
+    {% else %}
+      <img height='' width=''  src="{{ 'heroBannerImg.jpg' | asset_img_url: 'master' }}">
+  {% endif %}
+  <div class="text-black h-[148px] flex flex-col justify-between items-start">
+    {% for block in section.blocks %}
+      {% case block.type %}
+        {% when "heading" %}
+          <h2 class="text-base sm:text-[33px] font-bold">{{ block.settings.image_banner_heading }}</h2>
+        {% when "buttons" %}
+          <a href="{{ block.settings.image_banner_button_link }}" >
+          <button class="w-max h-auto mt-1 bg-black px-1 sm:mt-5 sm:px-3 sm:py-2 sm:text-base text-[12px] text-white">
+            {{ block.settings.image_banner_button_text }}
+          </button></a>
+      {% endcase %}
+    {% endfor %}     
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Section Image Banner",
+    "tag": "section",
+    "class": "section",
+
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "hero_banner_image",
+        "label": "Hero banner image"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "heading",
+        "name": "Image banner heading",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "inline_richtext",
+            "id": "image_banner_heading",
+            "default": "Spotlight our modern lineup",
+            "label": "Image banner heading"
+          }
+        ]
+      }, {
+        "type": "buttons",
+        "name": "Image_banner button",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "text",
+            "id": "image_banner_button_text",
+            "default": "Shop Now",
+            "label": "image_banner_button_text",
+            "info": "image_banner_button"
+          }, {
+            "type": "url",
+            "id": "image_banner_button_link",
+            "label": "image_banner_button_link"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Hero Image Banner",
+        "blocks": [
+          {
+            "type": "heading"
+          }, {
+            "type": "buttons"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

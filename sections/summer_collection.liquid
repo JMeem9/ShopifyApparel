@@ -1,0 +1,78 @@
+<div class="flex flex-col items-center pt-10 pb-10">
+  {% for block in section.blocks %}
+    {% case block.type %}
+        {% when "heading" %}
+          <h2 class="text-[33px] text-center text-slate-950 font-bold ">{{ block.settings.collection_heading }}</h2>
+        {% when "buttons" %}
+          <button class="w-max h-auto  bg-black px-1 my-5 sm:px-3 sm:py-2 sm:text-base text-[12px] text-white">
+            <a href="{{ block.settings.button_link }}"></a> {{ block.settings.button_text }}
+          </button>
+    {% endcase %}
+  {% endfor %}
+</div>
+<div class="flex w-full h-auto max-h-full relative justify-around">
+  {% for product in collections['summer-collection'].products limit:4 %}
+    {% render 'card-collection',
+    card_collection: product
+  %}
+  {% endfor %}
+</div>
+
+{% schema %}
+  {
+    "name": "Section Summer Collection",
+    "tag": "section",
+    "class": "section my-4",
+    "blocks": [
+      {
+        "type": "heading",
+        "name": "Collection heading",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "inline_richtext",
+            "id": "collection_heading",
+            "default": "Spotlight our summer lineup",
+            "label": "Collection heading"
+          }
+        ]
+      }, {
+        "type": "buttons",
+        "name": "Shop now button",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "text",
+            "id": "button_text",
+            "default": "Shop Now",
+            "label": "button_text",
+            "info": "button_text"
+          }, {
+            "type": "url",
+            "id": "button_link",
+            "label": "button_link"
+          }
+        ]
+      }, {
+        "type": "product",
+        "name": "Collection Product",
+        "limit": 1,
+        "settings": [
+         
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Summer Collection",
+        "blocks": [
+          {
+            "type": "heading"
+          }, {
+            "type": "buttons"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

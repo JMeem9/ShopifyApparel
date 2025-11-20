@@ -1,0 +1,19 @@
+<div class="relative bg-black text-white text-xs mx-auto px-4 ">  
+    <div class="flex justify-center items-center h-[44px] py-2">
+      {{section.settings.text}}
+    </div>
+</div>
+{% schema %}
+  {
+    "name": "Announcement",
+    "tag": "section",
+    "settings": [
+      {
+        "type": "text",
+        "id": "text",
+        "default": "Sign up to our newsletter to receive 15% off your first order.",
+        "label": "Announcement bar"
+      }
+    ]
+  }
+{% endschema %}

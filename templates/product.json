@@ -1,0 +1,65 @@
+{
+  "sections": {
+    "fetured_product": {
+      "type": "featured_product",
+      "blocks": {
+        "caption_4B9PVb": {
+          "type": "caption",
+          "settings": {
+            "caption": "RichApparel"
+          }
+        },
+        "title_jXNVbw": {
+          "type": "title",
+          "settings": {
+            "heading_size": "4xl"
+          }
+        },
+        "price_j9jMtA": {
+          "type": "price",
+          "settings": {
+          }
+        },
+        "quantity_selector_64LaMJ": {
+          "type": "quantity_selector",
+          "settings": {
+          }
+        },
+        "atc_button_ExHV4j": {
+          "type": "atc_button",
+          "settings": {
+            "button_text": "Add to Cart",
+            "button_link": ""
+          }
+        },
+        "variant_picker_crn46i": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "button",
+            "swatch_shape": "circle"
+          }
+        }
+      },
+      "block_order": [
+        "caption_4B9PVb",
+        "title_jXNVbw",
+        "price_j9jMtA",
+        "quantity_selector_64LaMJ",
+        "atc_button_ExHV4j",
+        "variant_picker_crn46i"
+      ],
+      "settings": {
+        "product": "",
+        "secondary_background": false,
+        "media_size": "medium",
+        "media_fit": "contain",
+        "media_position": "left",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    }
+  },
+  "order": [
+    "fetured_product"
+  ]
+}

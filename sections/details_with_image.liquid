@@ -1,0 +1,75 @@
+{% for block in section.blocks %}
+  {% case block.type %}
+    {% when "details" %}
+      <div class="flex flex-col w-[60%] justify-evenly px-8 py-3">
+        <h2 class="text-lg font-medium text-slate-900 py-2">{{ block.settings.details_heading }}</h2>
+        <div>{{ block.settings.details_text }}</div>
+      </div>
+    {% when "image" %}
+      <div class="flex flex-col justify-between items-center w-[40%] px-8 py-3">
+        {% if block.settings.banner_image %}
+          {{
+            block.settings.banner_image | image_url: width: 350 | image_tag
+          }}
+          {% else %}
+            <img height='' width='' src="https://petessential-store.myshopify.com/cdn/shop/files/fashion-model-in-pink.jpg?v=1715710449&width=350" alt="">
+        {% endif %}
+        <p class="text-xs py-2 font-semibold">{{ block.settings.img_caption }}</p> 
+      </div>
+  {% endcase %}
+{% endfor %}
+
+{% schema %}
+  {
+    "name": "Details with Image",
+    "tag": "section",
+    "class": "section my-4 flex bg-zinc-200",
+    "blocks": [
+      {
+        "type": "details",
+        "name": "Details",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "inline_richtext",
+            "id": "details_heading",
+            "default": "Luxury Silk",
+            "label": "Details Heading"
+          },
+          {
+            "type": "inline_richtext",
+            "id": "details_text",
+            "default": "Discover timeless elegance with our sustainable luxury silk clothing collection. Crafted with care, these silk pieces offer unparalleled comfort and style, perfect for eco-conscious fashion enthusiasts.",
+            "label": "Details Text"
+          }
+        ]
+      }, {
+        "type": "image",
+        "name": "Image",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "banner_image",
+            "label": "Banner Image"
+          }, 
+          {
+            "type": "url",
+            "id": "img_link",
+            "label": "Image Link"
+          },
+          {
+            "type": "inline_richtext",
+            "id": "img_caption",
+            "label": "Image Caption"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Details with Image"
+      }
+    ]
+  }
+{% endschema %}

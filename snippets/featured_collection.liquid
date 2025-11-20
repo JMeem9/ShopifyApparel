@@ -1,0 +1,11 @@
+<li class="flex flex-col items-start mx-3 w-1/3">
+{% if collection.featured_image %}
+  <div class="w-full">
+    <img height='' width='' src="{{  collection.featured_image | image_url: width: 315, height:315}}" class="w-full">
+  </div>
+  {% else %}
+  <div>
+  </div>
+{% endif %}  
+  <p class="font-medium text-slate-900 text-sm py-2"> {{- collection.title | link_to: collection.url }}  </p>
+</li>

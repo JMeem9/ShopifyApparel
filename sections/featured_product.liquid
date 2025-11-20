@@ -1,0 +1,447 @@
+{{ 'product.css' | asset_url | stylesheet_tag }}
+{% if product != null %}
+  {% assign product = product %}
+  {% else %}
+  {% assign product = section.settings.product %}
+{% endif %}
+
+<div class="flex {% if section.settings.media_position == 'right' %}flex-row-reverse{% endif %} {% if section.settings.secondary_background %}bg-zinc-200{% endif %} py-9 pt-[{{ section.settings.padding_top }}px] pb-[{{ section.settings.padding_bottom }}px]">
+  <div class="w-1/2 flex justify-center items-center">
+    <img
+      height=''
+      width=''
+      src="{{ product | image_url: width: 315, height:315 }}"
+      class="object-{{ section.settings.media_fit }}">
+  </div>
+  <div class="w-1/2 flex flex-col justify-center items-center">
+    <div class="product__info-wrapper grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+    {%- assign product_form_id = 'product-form-' | append: section.id -%}
+      <product-info
+        id="ProductInfo-{{ section.id }}"
+        class="product__info-container"
+        data-section="{{ section.id }}"
+        data-url="{{ product.url }}">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {% when 'caption' %}
+              <p class="text-xs">{{ block.settings.caption}} </p>
+            {%- when 'title' -%}
+              <h2 id="title-{{ section.id }}" class="text-{{ block.settings.heading_size}}">
+                {%- if product.title != blank -%}
+                  {{ product.title | escape }}
+                {%- else -%}
+                  {{ 'check nothing' }}
+                {%- endif -%}
+              </h2>
+
+            {%- when 'price' -%}
+              <div
+                id="price-{{ section.id }}"
+                role="status"
+                {{ block.settings.shopify_attributes }}
+                class="flex py-4 items-center">
+                {% if product.compare_at_price %}
+                  <p class="line-through text-md font-semibold text-slate-500 mr-2">
+                    {{ product.compare_at_price | money_with_currency }}
+                  </p>
+                {% endif %}
+                <p class="text-lg font-semibold text-slate-700">
+                  {{ product.price | money_with_currency }}
+                </p>
+              </div>
+
+            {%- when 'quantity_selector' -%}
+              <div
+                id="Quantity-Form-{{ section.id }}"
+                class="product-form__input product-form__quantity{% if settings.inputs_shadow_vertical_offset != 0 and settings.inputs_shadow_vertical_offset < 0 %} product-form__quantity-top{% endif %}"
+                {{ block.shopify_attributes }}>
+                {%- assign cart_qty = cart | item_count_for_variant: product.selected_or_first_available_variant.id
+                -%}
+                <label class="quantity__label form__label" for="Quantity-{{ section.id }}">
+                  {{ 'Quantity' }}
+                  <span class="quantity__rules-cart{% if cart_qty == 0 %} hidden{% endif %}">
+                    <span>{{ "check latter" }}</span>
+                  </span>
+                </label>
+                <div class="price-per-item__container">
+                  <quantity-input class="quantity">
+                    <button  class="quantity__button"  name="minus"  type="button">
+                      {% render 'icon-minus' %}
+                    </button>
+                    <input
+                      class="w-10 h-9 text-center"  type="number"   name="quantity"  id="Quantity-{{ section.id }}"  data-cart-quantity="{{ cart_qty }}"
+                      data-min="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+                      min="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+                      {% if product.selected_or_first_available_variant.quantity_rule.max != null %}
+                      data-max="{{ product.selected_or_first_available_variant.quantity_rule.max }}"
+                      max="{{ product.selected_or_first_available_variant.quantity_rule.max }}"
+                      {% endif %}
+                      step="{{ product.selected_or_first_available_variant.quantity_rule.increment }}"
+                      value="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+                      form="{{ product_form_id }}">
+                    <button  class="quantity__button"  name="plus"  type="button">
+                      {% render 'icon-plus' %}
+                    </button>
+                  </quantity-input>
+
+                </div>
+              </div>
+
+              {%- when 'variant_picker' -%}
+                {% render 'product-variant',
+                  product: product,
+                  block: block,
+                  product_form_id: product_form_id,
+                  update_url: false
+                %}
+
+
+              
+                {% when "atc_button" %}
+                {% if product.available %}
+                  {% form 'product', product %}
+                    <select name="id" id="">
+                      {% for variant in product.variants %}
+                        <option value="{{ variant.id }}">{{ variant.title }}</option>
+                      {% endfor %}
+                    </select>
+                    {% render 'atc-btn',
+                      product_id: product.id, 
+                      button_link: block.settings.button_link, 
+                      button_text: block.settings.button_text,
+                      width: 'full'
+                      button_type:"submit"
+                    %}
+                  {% endform %}
+                  {% else %}
+                    <p><strong>sold out</strong></p>
+                {% endif %}
+          
+              {% comment %} 
+                       {%- when 'sku' -%}
+                      <p
+                        class="product__sku{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}{% if product.selected_or_first_available_variant.sku.size == 0 %} visibility-hidden{% endif %}"
+                        id="Sku-{{ section.id }}"
+                        role="status"
+                        {{ block.shopify_attributes }}
+                      >
+                        <span class="visually-hidden">{{ 'product.sku' | t }}:</span>
+                        {{- product.selected_or_first_available_variant.sku -}}
+                      </p>
+                    {%- when 'share' -%}
+                      {% liquid
+                        assign share_url = product.selected_variant.url | default: product.url | prepend: request.origin
+                        render 'share-button', block: block, share_link: share_url
+                      %}
+                    {%- when 'variant_picker' -%}
+                      {% render 'product-variant-picker',
+                        product: product,
+                        block: block,
+                        product_form_id: product_form_id,
+                        update_url: false
+                      %}
+                    {%- when 'buy_buttons' -%}
+                      {%- render 'buy-buttons',
+                        block: block,
+                        product: product,
+                        product_form_id: product_form_id,
+                        section_id: section.id
+                      -%}
+                    {%- when 'custom_liquid' -%}
+                      {{ block.settings.custom_liquid }}
+                    {%- when 'rating' -%}
+                      {%- if product.metafields.reviews.rating.value != blank -%}
+                        <div class="rating-wrapper">
+                          {% liquid
+                            assign rating_decimal = 0
+                            assign decimal = product.metafields.reviews.rating.value.rating | modulo: 1
+                            if decimal >= 0.3 and decimal <= 0.7
+                              assign rating_decimal = 0.5
+                            elsif decimal > 0.7
+                              assign rating_decimal = 1
+                            endif
+                          %}
+                          <div
+                            class="rating"
+                            role="img"
+                            aria-label="{{ 'accessibility.star_reviews_info' | t: rating_value: product.metafields.reviews.rating.value, rating_max: product.metafields.reviews.rating.value.scale_max }}"
+                          >
+                            <span
+                              aria-hidden="true"
+                              class="rating-star"
+                              style="--rating: {{ product.metafields.reviews.rating.value.rating | floor }}; --rating-max: {{ product.metafields.reviews.rating.value.scale_max }}; --rating-decimal: {{ rating_decimal }};"
+                            ></span>
+                          </div>
+                          <p class="rating-text caption">
+                            <span aria-hidden="true">
+                              {{- product.metafields.reviews.rating.value }} /
+                              {{ product.metafields.reviews.rating.value.scale_max -}}
+                            </span>
+                          </p>
+                          <p class="rating-count caption">
+                            <span aria-hidden="true">({{ product.metafields.reviews.rating_count }})</span>
+                            <span class="visually-hidden">
+                              {{- product.metafields.reviews.rating_count }}
+                              {{ 'accessibility.total_reviews' | t -}}
+                            </span>
+                          </p>
+                        </div>
+                      {%- endif -%}
+                    {%- when 'icon-with-text' -%}
+                    {% render 'icon-with-text', block: block %} {% endcomment %}
+
+          {%- endcase -%}
+        {%- endfor -%}
+      </product-info>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Featured Product",
+    "tag": "section",
+    "class": "section my-10",
+    "settings": [
+      {
+        "type": "product",
+        "id": "product",
+        "label": "Select Product"
+      },
+      {
+        "type": "checkbox",
+        "id": "secondary_background",
+        "default": false,
+        "label": "Show Secondery Background"
+      },
+      {
+        "type": "select",
+        "id": "media_size",
+        "options": [
+          {
+            "value": "small",
+            "label": "Small"
+          }, {
+            "value": "medium",
+            "label": "Medium"
+          }, {
+            "value": "large",
+            "label": "Large"
+          }
+        ],
+        "default": "medium",
+        "label": "Medium",
+        "info": "Medium"
+      },
+      {
+        "type": "select",
+        "id": "media_fit",
+        "options": [
+          {
+            "value": "contain",
+            "label": "Original"
+          }, {
+            "value": "cover",
+            "label": "Fill"
+          }
+        ],
+        "default": "contain",
+        "label": "Original"
+      }, {
+        "type": "select",
+        "id": "media_position",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          }, {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "left",
+        "label": "Left",
+        "info": "left"
+      }, {
+        "type": "header",
+        "content": "Section Padding"
+      }, {
+        "type": "range",
+        "id": "padding_top",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "Padding Top",
+        "default": 36
+      }, {
+        "type": "range",
+        "id": "padding_bottom",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "padding Bottom",
+        "default": 36
+      }
+    ],
+    "blocks": [
+      {
+        "type": "caption",
+        "name": "Product Caption",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "text",
+            "id": "caption",
+            "label": "Product Caption",
+            "default": "RichApparel"
+          }
+          
+        ]
+      },
+      {
+        "type": "title",
+        "name": "Product Title",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "select",
+            "id": "heading_size",
+            "options": [
+              {
+                "value": "4xl",
+                "label": "Large"
+              }, {
+                "value": "3xl",
+                "label": "Medium"
+              }, {
+                "value": "2xl",
+                "label": "Small"
+              }
+            ],
+            "default": "4xl",
+            "label": "Large"
+          }
+        ]
+      },
+      {
+        "type": "price",
+        "name": "Product Price",
+        "limit": 1
+      },
+      {
+        "type": "quantity_selector",
+        "name": "Product Quantity",
+        "limit": 1
+      },
+      {
+        "type": "variant_picker",
+        "name": "Variant name",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "select",
+            "id": "picker_type",
+            "options": [
+              {
+                "value": "dropdown",
+                "label": "Variant label 1"
+              }, {
+                "value": "button",
+                "label": "Variant label 2"
+              }
+            ],
+            "default": "button",
+            "label": "Variant picker btn label"
+          }, {
+            "id": "swatch_shape",
+            "label": "Swatch Shape",
+            "type": "select",
+            "options": [
+              {
+                "value": "circle",
+                "label": "Circle"
+              }, {
+                "value": "square",
+                "label": "Square"
+              }, {
+                "value": "none",
+                "label": "None"
+              }
+            ],
+            "default": "circle"
+          }
+        ]
+      },{
+        "type": "atc_button",
+        "name": "Add to Cart",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "text",
+            "id": "button_text",
+            "default": "Add to Cart",
+            "label": "Button Label"
+          }, {
+            "type": "url",
+            "id": "button_link",
+            "label": "Button Link"
+          }
+        ]
+      }, {
+        "type": "buy_buttons",
+        "name": "Product Buy Btn",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "show_dynamic_checkout",
+            "default": true,
+            "label": "Product Buy Btn checkout ",
+            "info": "Product Buy Btn checkout "
+          }, {
+            "type": "checkbox",
+            "id": "show_gift_card_recipient",
+            "default": true,
+            "label": "Product Buy Btn show_gift",
+            "info": "Product Buy Btn show_gift info"
+          }
+        ]
+      }, {
+        "type": "share",
+        "name": "Product Share Btn ",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "text",
+            "id": "share_label",
+            "label": "Product Share Btn text",
+            "default": "Share"
+          }, {
+            "type": "paragraph",
+            "content": "Product Share Btn featured_image content"
+          }, {
+            "type": "paragraph",
+            "content": "Product Share Btn title_info content"
+          }
+        ]
+      }, {
+        "type": "rating",
+        "name": "Product Rating",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "paragraph",
+            "content": "Product Rating content"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Featured Product"
+      }
+    ]
+  }
+{% endschema %}
