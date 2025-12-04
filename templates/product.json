@@ -1,7 +1,7 @@
 {
   "sections": {
-    "fetured_product": {
-      "type": "featured_product",
+    "template-product": {
+      "type": "template-product",
       "blocks": {
         "caption_4B9PVb": {
           "type": "caption",
@@ -60,6 +60,6 @@
     }
   },
   "order": [
-    "fetured_product"
+    "template-product"
   ]
 }

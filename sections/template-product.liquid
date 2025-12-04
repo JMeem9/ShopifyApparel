@@ -4,14 +4,18 @@
   {% else %}
   {% assign product = section.settings.product %}
 {% endif %}
-
 <div class="flex {% if section.settings.media_position == 'right' %}flex-row-reverse{% endif %} {% if section.settings.secondary_background %}bg-zinc-200{% endif %} py-9 pt-[{{ section.settings.padding_top }}px] pb-[{{ section.settings.padding_bottom }}px]">
   <div class="w-1/2 flex justify-center items-center">
-    <img
+    {% comment %} <img
       height=''
       width=''
       src="{{ product | image_url: width: 315, height:315 }}"
-      class="object-{{ section.settings.media_fit }}">
+      class="object-{{ section.settings.media_fit }}"> {% endcomment %}
+      {% for media in product.media %}
+        <div class="h-100 overflow-hidden">
+          {% render 'product-media' %}
+        </div>
+      {% endfor %}
   </div>
   <div class="w-1/2 flex flex-col justify-center items-center">
     <div class="product__info-wrapper grid__item{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">

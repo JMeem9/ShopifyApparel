@@ -1,0 +1,153 @@
+{% paginate collection.products by 6 %}
+  <div class="flex flex-col pt-10 pb-10">
+    {% for block in section.blocks %}
+      {% case block.type %}
+        {% when 'heading' %}
+          <h2 class="text-[33px] text-{{block.settings.heading_position}} text-slate-950 ">
+            {% if block.settings.collection_heading %}
+              {{ block.settings.collection_heading }}
+            {% else %}
+              {{ collection.title }}
+            {% endif %}
+          </h2>
+      {% endcase %}
+    {% endfor %}
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    {% for product in collection.products %}
+      <div id="prod-{{ collection.id }}-{{ product.id }}" class="w-full px-3 py-6">
+        <a href="{{ product.url | within: collection }}">
+          <div class="bg-white shadow-xl overflow-hidded h-full">
+            <div class="w-full h-[300px] overflow-hidden">
+              <img
+                height=""
+                width=""
+                src="{{ product.featured_image.src | image_url: width: 315, height:315 }}"
+                class="w-full h-auto object-cover"
+              >
+            </div>
+            <div class="p-2">
+              <p class="text-lg pt-2 font-semibold text-slate-700">
+                {{- product.title -}}
+              </p>
+              {% render 'price', product: product %}
+            </div>
+
+            {% for block in section.blocks %}
+              {% case block.type %}
+                {% when 'atc_button' %}
+                  {% if product.available %}
+                    {% render 'atc-btn',
+                      collection_id: collection.id,
+                      product_id: product.id,
+                      button_link: block.settings.button_link,
+                      button_text: block.settings.button_text,
+                      width: 'full'
+                    %}
+                  {% else %}
+                    <p class="text-red-600 p-2"><strong>sold out</strong></p>
+                  {% endif %}
+              {% endcase %}
+            {% endfor %}
+          </div>
+        </a>
+      </div>
+    {% else %}
+      <p>no matches</p>
+    {% endfor %}
+  </div>
+  {% if paginate.pages > 1 %}{{ paginate | default_pagination }}{% endif %}
+{% endpaginate %}
+
+{% schema %}
+{
+  "name": "Collection",
+  "tag": "section",
+  "class": "section my-4",
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Collection heading",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "inline_richtext",
+          "id": "collection_heading",
+          "default": "Spotlight our summer lineup",
+          "label": "Collection heading"
+        },
+        {
+          "type": "select",
+          "id": "heading_position",
+          "options": [
+            {
+              "value": "start",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "end",
+              "label": "Right"
+            }
+          ],
+          "default": "start",
+          "label": "Heading Position",
+          "info": "select heading position"
+        }
+      ]
+    },
+    {
+      "type": "atc_button",
+      "name": "View Product",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "button_text",
+          "default": "View Product",
+          "label": "Button Label"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link"
+        }
+      ]
+    },
+    {
+      "type": "buttons",
+      "name": "Product details",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "pdp_button_text",
+          "default": "Show Details",
+          "label": "Button Label"
+        },
+        {
+          "type": "url",
+          "id": "pdp_button_link",
+          "label": "Button Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Summer Collection",
+      "blocks": [
+        {
+          "type": "heading"
+        },
+        {
+          "type": "buttons"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

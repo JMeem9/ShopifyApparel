@@ -3,29 +3,29 @@
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
     {% for article in blog.articles %}
       <div class="w-full px-3 py-6">
-        <div class="bg-white shadow-xl overflow-hidded">
+        <div class="bg-white shadow-xl overflow-hidded h-full">
           {% if article.image != null %}
             <a href="{{ article.url }}">
               {{ article.image | image_url: width: 500 | image_url: height: 350 | image_tag }}
-             
             </a>
           {% else %}
             {% comment %} {% assign placeholder_image = 'collection-6' %} {% endcomment %}
-            {{ 'image' | placeholder_svg_tag: 'w-full h-80 object-cover bg-gray-100' }}
+            {{ 'image' | placeholder_svg_tag: 'w-full h-[200px] object-cover bg-gray-100' }}
           {% endif %}
+          <div class="flex flex-col gap-2 p-4">
+            <a href="{{ article.url }}" class="font-bold text-xl text-gray-800">{{ article.title }}</a>
 
-          <a href="{{ article.url }}" class="font-bold text-xl text-gray-800">{{ article.title }}</a>
-
-          <p class="text-xs text-gray-800">{{ article.author }} @ {{ article.created_at | date: '%Y-%m-%d' }}</p>
-          {% if section.settings.show_decription %}
-            <p class="text-sm">
-              {% if article.excerpt.size > 0 %}
-                {{ article.excerpt | strip_html | truncatewords: 15 }}
-              {% else %}
-                {{ article.content | strip_html | truncatewords: 15 }}
-              {% endif %}
-            </p>
-          {% endif %}
+            <p class="text-xs text-gray-800">{{ article.author }} @ {{ article.created_at | date: '%Y-%m-%d' }}</p>
+            {% if section.settings.show_decription %}
+              <p class="text-sm">
+                {% if article.excerpt.size > 0 %}
+                  {{ article.excerpt | strip_html | truncatewords: 15 }}
+                {% else %}
+                  {{ article.content | strip_html | truncatewords: 15 }}
+                {% endif %}
+              </p>
+            {% endif %}
+          </div>
         </div>
       </div>
     {% endfor %}
